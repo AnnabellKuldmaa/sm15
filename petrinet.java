@@ -105,8 +105,17 @@ for each case in cases: # 1207: ABDEA
 	c.add(c_i)
 	x.add(num_of_enabled_transitions / n_i)
 
+	
+	
 
 # TODO:
-# Kas võib eeldada, et alguses/kogu petrinetis ei ole ühtegi tokenit?
-# WTF L?
-# Kas traces on esimene event alati start place? Hetkel eeldame
+# Kas traces on esimene event alati start place? Hetkel eeldame. NB. EI PEA OLEMA
+# Lõputeema: kui läbimise lõpus pole viimases kohas tokenit, tuleb see sinna panna ja suurendada missing tokenite arvu
+
+# veel steppe peame lugema event logi järgi. 
+# esimene step:
+#paneme algusesse tokeni. enableme vajalikud transitionid ja läbime
+
+#RESOLVED:
+# Kas võib eeldada, et alguses/kogu petrinetis ei ole ühtegi tokenit? Jah, ühtegi tokenit ei ole alguses
+# WTF L?: erineate labelite arv lggis
