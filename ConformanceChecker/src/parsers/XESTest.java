@@ -36,12 +36,11 @@ public class XESTest {
 						 * Sama, mis eelmine? A /complete 3
 						 * 2009-09-24T09:35:11.100+03:00
 						 */
-						// System.out.println(value);
 					}
 					for (String key : caseAttributes.keySet()) {
 						String value = caseAttributes.get(key).toString();
-						// Mis jama see veel on?
-						// System.out.println(value);
+						System.out.println("Vıti" + key);
+						System.out.println( "V‰‰rtus" + value);
 					}
 				}
 
