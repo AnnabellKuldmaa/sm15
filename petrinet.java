@@ -23,6 +23,7 @@ Integer k = cases.length()
 
 List <Integer> n;
 List <Integer> m;
+List <Integer> r;
 List <Integer> c;
 List <Integer> p;
 List <Integer> x;
@@ -62,7 +63,7 @@ for each case in cases: # 1207: ABDEA
 	
 	for each event in events: # A
 		
-		String label = event.getLabel()
+		String label = event.getName()
 		Transition transition = transitions.getTransition(label)
 		
 		# end of first step
@@ -75,6 +76,7 @@ for each case in cases: # 1207: ABDEA
 			num_of_enabled_transitions--
 		else:
 			m_i ++
+		
 		List <Place> outPlaces = transition.getOutGoingPlaces()
 		# produce tokens
 		for each outPlace in outPlaces:
@@ -87,8 +89,8 @@ for each case in cases: # 1207: ABDEA
 			for each outT in outTransitions:
 				enabled = True
 				List <Place> inPlaces = outT.getInComingPlaces()
-				for inPlace in inPlaces:
-					if not inPlace.hasToken():
+				for each inP in inPlaces:
+					if not inP.hasTokens():
 						enabled = False
 				outT.setEnabled(enabled)
 				
@@ -100,6 +102,7 @@ for each case in cases: # 1207: ABDEA
 	
 	# add to lists
 	n.add(n_i)
+	m.add(m_i)
 	r.add(r_i)
 	p.add(p_i)
 	c.add(c_i)
