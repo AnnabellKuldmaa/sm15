@@ -15,6 +15,10 @@ public class PetriNet {
 		return id;
 	}
 
+	public PetriNet() {
+		super();
+	}
+
 	public PetriNet(String id, Collection<Transition> transitions,
 			Collection<Place> places) {
 		super();

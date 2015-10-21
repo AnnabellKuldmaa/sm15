@@ -28,7 +28,7 @@
          Run them from the command line by executing "ant [targetname]"  -->
 
 	<target name="run" depends="build" description="Run for testing">
-		<java classname="parsers.PNMLTest" classpathref="run.classpath" fork="yes" />
+		<java classname="domain.Controller" classpathref="run.classpath" fork="yes" />
 	</target>
 
 	<target name="build" description="Build the system">
