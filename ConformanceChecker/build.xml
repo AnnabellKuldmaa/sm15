@@ -3,57 +3,47 @@
 
 	<!-- Definitions of variables used during the rest of this script -->
 
-	<property file="build.properties"/>
-	<property name="build.dir" value="${basedir}/build"/>
-	<property name="build.classes.dir" value="${build.dir}/classes"/>
-	<property name="build" location="build"/>
-	<property name="src.dir" value="${basedir}/src"/>
+	<property file="build.properties" />
+	<property name="build.dir" value="${basedir}/build" />
+	<property name="build.classes.dir" value="${build.dir}/classes" />
+	<property name="src.dir" value="${basedir}/src" />
 
 	<!-- Definitions of classpath variants used for different tasks -->
 	<path id="compile.classpath">
 		<fileset dir="lib">
-			<include name="*.jar"/>
+			<include name="*.jar" />
 		</fileset>
 	</path>
 	<!-- Run classpath -->
 	<path id="run.classpath">
 		<!-- configuration -->
-		<pathelement location="${build.classes.dir}"/>
+		<pathelement location="${build.classes.dir}" />
 		<fileset dir="lib">
 			<include name="*.jar" />
 		</fileset>
 	</path>
 
-	
+
 	<!-- Definitions of runnable ant targets.
          Run them from the command line by executing "ant [targetname]"  -->
 
 	<target name="run" depends="build" description="Run for testing">
-		<java classname="parsers.PNMLTest.java" classpathref="run.classpath" fork="yes" />
+		<java classname="parsers.PNMLTest" classpathref="run.classpath" fork="yes" />
 	</target>
 
 	<target name="build" description="Build the system">
-		<mkdir dir="${build.dir}"/>
-		<mkdir dir="${build.classes.dir}"/>
-		<javac
-            srcdir="${src.dir}"
-            destdir="${build.classes.dir}"
-            debug="true"
-            debuglevel="lines,vars,source"
-            encoding="utf-8"
-            compiler="modern"
-            target="1.8"
-            source="1.8">
-			<classpath refid="compile.classpath"/>
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.classes.dir}" />
+		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="true" debuglevel="lines,vars,source" encoding="utf-8" compiler="modern" target="1.8" source="1.8">
+			<classpath refid="compile.classpath" />
 		</javac>
 	</target>
 
 	<!-- Clean up build system results -->
 	<target name="clean" description="Clean up build system results">
-		<delete dir="${build.dir}"/>
+		<delete dir="${build.dir}" />
 	</target>
-	
-	
+
 
 </project>
 
