@@ -4,8 +4,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 
+import org.deckfour.xes.extension.std.XConceptExtension;
+import org.deckfour.xes.extension.std.XLifecycleExtension;
+import org.deckfour.xes.extension.std.XTimeExtension;
+import org.deckfour.xes.model.XAttributeMap;
+import org.deckfour.xes.model.XEvent;
+import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XTrace;
 import org.processmining.models.connections.GraphLayoutConnection;
 import org.processmining.models.graphbased.directed.petrinet.PetrinetEdge;
 import org.processmining.models.graphbased.directed.petrinet.PetrinetGraph;
@@ -17,8 +25,12 @@ import org.processmining.models.semantics.petrinet.Marking;
 import org.processmining.plugins.pnml.Pnml;
 
 import parsers.PnmlImportUtils;
+import parsers.XLogReader;
 import petri.Arc;
 import petri.PetriNet;
+import data.Event;
+import data.Log;
+import data.Trace;
 
 public class EntityManager {
 
@@ -80,6 +92,36 @@ public class EntityManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new PetriNet();
+		}
+	}
+
+	public static Log getLog(String xPathOfLog) {
+		try {
+			XLog xlog = XLogReader.openLog("test.xes");
+			// Loop traces in a log
+			Log log = new Log();
+			if (xlog.size() > 0) {
+				for (XTrace xtrace : xlog) {
+					Trace trace = new Trace();
+					trace.setName(XConceptExtension.instance().extractName(
+							xtrace));
+					for (XEvent event : xtrace) {
+						String activityName = XConceptExtension.instance()
+								.extractName(event); // Event name
+						Date timestamp = XTimeExtension.instance()
+								.extractTimestamp(event); // Event timestamp
+						String eventType = XLifecycleExtension.instance()
+								.extractTransition(event); // EventType
+						trace.addEvent(new Event(activityName, timestamp));
+					}
+					log.addTrace(trace);
+				}
+
+			}
+			return log;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Log();
 		}
 	}
 }
