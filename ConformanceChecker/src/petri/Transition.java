@@ -7,13 +7,13 @@ public class Transition {
 
 	private String id;
 	private String eventName; // TODO: need both?
-	private Boolean isEnabled;
+	private Boolean enabled;
 	private Collection<Arc> arcs;
 
 	public Transition(String eventName) {
 		super();
 		this.eventName = eventName;
-		this.isEnabled = false;
+		this.enabled = false;
 		this.arcs = new HashSet<Arc>();
 	}
 
@@ -37,12 +37,12 @@ public class Transition {
 		this.eventName = eventName;
 	}
 
-	public Boolean getIsEnabled() {
-		return isEnabled;
+	public Boolean isEnabled() {
+		return enabled;
 	}
 
-	public void setIsEnabled(Boolean isEnabled) {
-		this.isEnabled = isEnabled;
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	public Collection<Arc> getArcs() {
@@ -53,24 +53,24 @@ public class Transition {
 		this.arcs = arcs;
 	}
 
-	public Collection<Arc> getIncomingEdges() {
-		Collection<Arc> inArcs = new HashSet<Arc>();
+	public Collection<Place> getIncomingPlaces() {
+		Collection<Place> inPlaces = new HashSet<Place>();
 		for (Arc arc : this.arcs) {
 			// From Place to Transition
 			if (arc.isDirection())
-				inArcs.add(arc);
+				inPlaces.add(arc.getPlace());
 		}
-		return inArcs;
+		return inPlaces;
 	}
 
-	public Collection<Arc> getOutgoingEdges() {
-		Collection<Arc> outArcs = new HashSet<Arc>();
+	public Collection<Place> getOutgoingPlaces() {
+		Collection<Place> outPlaces = new HashSet<Place>();
 		for (Arc arc : this.arcs) {
 			// Transition to Place
 			if (!arc.isDirection())
-				outArcs.add(arc);
+				outPlaces.add(arc.getPlace());
 		}
-		return outArcs;
+		return outPlaces;
 	}
 
 }

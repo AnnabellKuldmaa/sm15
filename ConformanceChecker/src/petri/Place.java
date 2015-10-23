@@ -45,24 +45,38 @@ public class Place {
 		this.arcs.add(arc);
 	}
 
-	public Collection<Arc> getIncomingEdges() {
-		Collection<Arc> inArcs = new HashSet<Arc>();
+	public Collection<Transition> getIncomingTransitions() {
+		Collection<Transition> inTransitions = new HashSet<Transition>();
 		for (Arc arc : this.arcs) {
 			// From Transition to Place
 			if (!arc.isDirection())
-				inArcs.add(arc);
+				inTransitions.add(arc.getTransition());
 		}
-		return inArcs;
+		return inTransitions;
 	}
 
-	public Collection<Arc> getOutgoingEdges() {
-		Collection<Arc> outArcs = new HashSet<Arc>();
+	public Collection<Transition> getOutgoingTransitions() {
+		Collection<Transition> outTransitions = new HashSet<Transition>();
 		for (Arc arc : this.arcs) {
-			// From Place to Transition
+			// From Transition to Place
 			if (arc.isDirection())
-				outArcs.add(arc);
+				outTransitions.add(arc.getTransition());
 		}
-		return outArcs;
+		return outTransitions;
 	}
 
+	public boolean hasTokens() {
+		if (this.numOfTokens > 0)
+			return true;
+		else
+			return false;
+	}
+
+	public void produceToken() {
+		this.numOfTokens++;
+	}
+
+	public void consumeToken() {
+		this.numOfTokens--;
+	}
 }

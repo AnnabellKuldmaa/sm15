@@ -47,4 +47,37 @@ public class PetriNet {
 		this.places = places;
 	}
 
+	public int getNumberOfEnabledTransitions() {
+		int numberOfEnabledTransitions = 0;
+		for (Transition transition : this.transitions) {
+			if (transition.isEnabled())
+				numberOfEnabledTransitions++;
+		}
+		return numberOfEnabledTransitions;
+	}
+
+	public Transition getTransitionWithName(String name) {
+		for (Transition transition : this.transitions) {
+			if (transition.getEventName().equals(name))
+				return transition;
+		}
+		return null;
+
+	}
+
+	public Place getStartPlace() {
+		for (Place place : this.places) {
+			if (place.getIncomingTransitions().size() == 0)
+				return place;
+		}
+		return null;
+	}
+
+	public Place getEndPlace() {
+		for (Place place : this.places) {
+			if (place.getOutgoingTransitions().size() == 0)
+				return place;
+		}
+		return null;
+	}
 }

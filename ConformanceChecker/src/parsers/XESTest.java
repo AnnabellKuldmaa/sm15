@@ -39,8 +39,6 @@ public class XESTest {
 					}
 					for (String key : caseAttributes.keySet()) {
 						String value = caseAttributes.get(key).toString();
-						System.out.println("Vıti" + key);
-						System.out.println( "V‰‰rtus" + value);
 					}
 				}
 

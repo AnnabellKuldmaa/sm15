@@ -16,24 +16,14 @@ public class Controller {
 		// Testing Places
 		// Testing Places
 		for (Place place : petri.getPlaces()) {
-			// System.out.println("Place id: " + place.getId());
-			for (Arc a : place.getIncomingEdges()) {
-				// System.out.println("In: " + a.getSourceId());
-			}
-			for (Arc a : place.getOutgoingEdges()) {
-				// System.out.println("Out: " + a.getTargetId());
-			}
+
 		}
 		// Testing Transitions
+
 		for (Transition transition : petri.getTransitions()) {
 			// System.out.println("Transition id: " +
 			// transition.getEventName());
-			for (Arc a : transition.getIncomingEdges()) {
-				// System.out.println("In: " + a.getSourceId());
-			}
-			for (Arc a : transition.getOutgoingEdges()) {
-				// System.out.println("Out: " + a.getTargetId());
-			}
+
 		}
 		for (Trace trace : log.getTraces()) {
 			System.out.println("Trace name" + trace.getName());

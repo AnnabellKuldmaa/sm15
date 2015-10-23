@@ -2,6 +2,7 @@ package domain;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Date;
@@ -35,59 +36,14 @@ import data.Trace;
 public class EntityManager {
 
 	public static PetriNet getPetryNet(String xPathOfPetriNet) {
-		PnmlImportUtils ut = new PnmlImportUtils();
-		File f = new File(xPathOfPetriNet);
+		PnmlImportUtils utils = new PnmlImportUtils();
+		File file = new File(xPathOfPetriNet);
 		try {
-			InputStream input = new FileInputStream(f);
-			Pnml pnml = ut.importPnmlFromStream(input, f.getName(), f.length());
-			PetrinetGraph net = PetrinetFactory.newInhibitorNet(pnml.getLabel()
-					+ " (imported from " + f.getName() + ")");
-			Marking marking = new Marking();
-			pnml.convertToNet(net, marking, new GraphLayoutConnection(net));
-
-			Collection<Place> netPlaces = net.getPlaces();
-			Collection<Transition> netTransitions = net.getTransitions();
-			// Create places and transitions
+			PetrinetGraph net = getPetrinetGraph(utils, file);
 			Collection<petri.Place> places = new HashSet<petri.Place>();
 			Collection<petri.Transition> transitions = new HashSet<petri.Transition>();
-			// Add Transitions
-			for (Transition netTransition : netTransitions) {
-				transitions.add(new petri.Transition(netTransition.getLabel()));
-			}
-			// Add Places
-			for (Place netPlace : netPlaces) {
-				petri.Place place = new petri.Place(netPlace.getLabel());
-				places.add(place);
-				// Loop outgoing edges
-				Collection<PetrinetEdge<? extends PetrinetNode, ? extends PetrinetNode>> outEdges = net
-						.getOutEdges(netPlace);
-				for (PetrinetEdge<? extends PetrinetNode, ? extends PetrinetNode> edge : outEdges) {
-					for (petri.Transition transition : transitions) {
-						if ((edge.getTarget().getLabel()).equals(transition
-								.getEventName())) {
-							Arc arc = new Arc(true, transition, place);
-							place.addEdge(arc);
-							transition.addEdge(arc);
-
-						}
-					}
-				}
-				// Loop incoming edges
-				Collection<PetrinetEdge<? extends PetrinetNode, ? extends PetrinetNode>> inEdges = net
-						.getInEdges(netPlace);
-				for (PetrinetEdge<? extends PetrinetNode, ? extends PetrinetNode> edge : inEdges) {
-					for (petri.Transition transition : transitions) {
-						if ((edge.getSource().getLabel()).equals(transition
-								.getEventName())) {
-							Arc arc = new Arc(false, transition, place);
-							place.addEdge(arc);
-							transition.addEdge(arc);
-						}
-					}
-				}
-			}
-
-			return new PetriNet("test", transitions, places);
+			populatePlacesAndTransitions(net, places, transitions);
+			return new PetriNet(net.getLabel(), transitions, places);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -95,33 +51,106 @@ public class EntityManager {
 		}
 	}
 
+	private static PetrinetGraph getPetrinetGraph(PnmlImportUtils ut, File f)
+			throws FileNotFoundException, Exception {
+		InputStream input = new FileInputStream(f);
+		Pnml pnml = ut.importPnmlFromStream(input, f.getName(), f.length());
+		PetrinetGraph net = PetrinetFactory.newInhibitorNet(pnml.getLabel()
+				+ " (imported from " + f.getName() + ")");
+		Marking marking = new Marking();
+		pnml.convertToNet(net, marking, new GraphLayoutConnection(net));
+		return net;
+	}
+
+	private static void populatePlacesAndTransitions(PetrinetGraph net,
+			Collection<petri.Place> places,
+			Collection<petri.Transition> transitions) {
+		Collection<Place> netPlaces = net.getPlaces();
+		Collection<Transition> netTransitions = net.getTransitions();
+		// Add Transitions
+		for (Transition netTransition : netTransitions) {
+			transitions.add(new petri.Transition(netTransition.getLabel()));
+		}
+		// Add Places
+		for (Place netPlace : netPlaces) {
+			petri.Place place = new petri.Place(netPlace.getLabel());
+			places.add(place);
+			populateEdgesFromPlaces(net, transitions, netPlace, place);
+			populatEdgesToPlaces(net, transitions, netPlace, place);
+		}
+	}
+
+	private static void populateEdgesFromPlaces(PetrinetGraph net,
+			Collection<petri.Transition> transitions, Place netPlace,
+			petri.Place place) {
+		Collection<PetrinetEdge<? extends PetrinetNode, ? extends PetrinetNode>> outEdges = net
+				.getOutEdges(netPlace);
+		for (PetrinetEdge<? extends PetrinetNode, ? extends PetrinetNode> edge : outEdges) {
+			for (petri.Transition transition : transitions) {
+				if ((edge.getTarget().getLabel()).equals(transition
+						.getEventName())) {
+					Arc arc = new Arc(true, transition, place);
+					place.addEdge(arc);
+					transition.addEdge(arc);
+
+				}
+			}
+		}
+	}
+
+	private static void populatEdgesToPlaces(PetrinetGraph net,
+			Collection<petri.Transition> transitions, Place netPlace,
+			petri.Place place) {
+		Collection<PetrinetEdge<? extends PetrinetNode, ? extends PetrinetNode>> inEdges = net
+				.getInEdges(netPlace);
+		for (PetrinetEdge<? extends PetrinetNode, ? extends PetrinetNode> edge : inEdges) {
+			for (petri.Transition transition : transitions) {
+				if ((edge.getSource().getLabel()).equals(transition
+						.getEventName())) {
+					Arc arc = new Arc(false, transition, place);
+					place.addEdge(arc);
+					transition.addEdge(arc);
+				}
+			}
+		}
+	}
+
 	public static Log getLog(String xPathOfLog) {
 		try {
 			XLog xlog = XLogReader.openLog("test.xes");
 			// Loop traces in a log
-			Log log = new Log();
-			if (xlog.size() > 0) {
-				for (XTrace xtrace : xlog) {
-					Trace trace = new Trace();
-					trace.setName(XConceptExtension.instance().extractName(
-							xtrace));
-					for (XEvent event : xtrace) {
-						String activityName = XConceptExtension.instance()
-								.extractName(event); // Event name
-						Date timestamp = XTimeExtension.instance()
-								.extractTimestamp(event); // Event timestamp
-						String eventType = XLifecycleExtension.instance()
-								.extractTransition(event); // EventType
-						trace.addEvent(new Event(activityName, timestamp));
-					}
-					log.addTrace(trace);
-				}
-
-			}
+			Log log = getLog(xlog);
 			return log;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new Log();
+		}
+	}
+
+	private static Log getLog(XLog xlog) {
+		Log log = new Log();
+		if (xlog.size() > 0) {
+			for (XTrace xtrace : xlog) {
+				Trace trace = new Trace();
+				trace.setName(XConceptExtension.instance().extractName(
+						xtrace));
+				populateEvents(xtrace, trace);
+				log.addTrace(trace);
+			}
+
+		}
+		return log;
+	}
+
+	private static void populateEvents(XTrace xtrace, Trace trace) {
+		for (XEvent event : xtrace) {
+			String activityName = XConceptExtension.instance()
+					.extractName(event); // Event name
+			Date timestamp = XTimeExtension.instance()
+					.extractTimestamp(event); // Event timestamp
+			String eventType = XLifecycleExtension.instance()
+					.extractTransition(event); // EventType
+			trace.addEvent(new Event(activityName, timestamp));
 		}
 	}
 }

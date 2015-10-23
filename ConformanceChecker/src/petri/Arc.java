@@ -17,6 +17,14 @@ public class Arc {
 		this.place = place;
 	}
 
+	public Transition getTransition() {
+		return transition;
+	}
+
+	public Place getPlace() {
+		return place;
+	}
+
 	public String getSourceId() {
 		// from place to transition
 		if (this.direction)
