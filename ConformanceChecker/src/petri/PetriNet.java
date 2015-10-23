@@ -56,6 +56,14 @@ public class PetriNet {
 		return numberOfEnabledTransitions;
 	}
 
+	public int getNumberOfTokens() {
+		int numberOfTokens = 0;
+		for (Place place : this.places)
+			numberOfTokens = numberOfTokens + place.getNumberOfTokens();
+
+		return numberOfTokens;
+	}
+
 	public Transition getTransitionWithName(String name) {
 		for (Transition transition : this.transitions) {
 			if (transition.getEventName().equals(name))

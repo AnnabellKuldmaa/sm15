@@ -7,7 +7,7 @@ public class Place {
 
 	private String id; // p1
 	private String name; // TODO: need both?
-	private int numOfTokens;
+	private int numberOfTokens;
 	private Collection<Arc> arcs;
 
 	public String getId() {
@@ -18,12 +18,12 @@ public class Place {
 		this.id = id;
 	}
 
-	public int getNumOfTokens() {
-		return numOfTokens;
+	public int getNumberOfTokens() {
+		return numberOfTokens;
 	}
 
-	public void setNumOfTokens(int numOfTokens) {
-		this.numOfTokens = numOfTokens;
+	public void setNumberOfTokens(int numberOfTokens) {
+		this.numberOfTokens = numberOfTokens;
 	}
 
 	public Collection<Arc> getArcs() {
@@ -37,7 +37,7 @@ public class Place {
 	public Place(String id) {
 		super();
 		this.id = id;
-		this.numOfTokens = 0;
+		this.numberOfTokens = 0;
 		this.arcs = new HashSet<Arc>();
 	}
 
@@ -66,17 +66,17 @@ public class Place {
 	}
 
 	public boolean hasTokens() {
-		if (this.numOfTokens > 0)
+		if (this.numberOfTokens > 0)
 			return true;
 		else
 			return false;
 	}
 
 	public void produceToken() {
-		this.numOfTokens++;
+		this.numberOfTokens++;
 	}
 
 	public void consumeToken() {
-		this.numOfTokens--;
+		this.numberOfTokens--;
 	}
 }
