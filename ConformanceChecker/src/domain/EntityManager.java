@@ -131,23 +131,34 @@ public class EntityManager {
 		Log log = new Log();
 		if (xlog.size() > 0) {
 			for (XTrace xtrace : xlog) {
-				Trace trace = new Trace();
-				trace.setName(XConceptExtension.instance().extractName(
-						xtrace));
+				Trace trace = new Trace(XConceptExtension.instance()
+						.extractName(xtrace));
 				populateEvents(xtrace, trace);
-				log.addTrace(trace);
+				
+				addTraceToLog(log, trace);
+
 			}
 
 		}
 		return log;
 	}
 
+	private static void addTraceToLog(Log log, Trace trace) {
+		for (Trace existingTrace : log.getTraces()) {
+			if (existingTrace.equals(trace)) {
+				existingTrace.addInstance();
+				return;				
+			}
+		}
+		log.addTrace(trace);
+
+	}
+
 	private static void populateEvents(XTrace xtrace, Trace trace) {
 		for (XEvent event : xtrace) {
-			String activityName = XConceptExtension.instance()
-					.extractName(event); // Event name
-			Date timestamp = XTimeExtension.instance()
-					.extractTimestamp(event); // Event timestamp
+			String activityName = XConceptExtension.instance().extractName(
+					event);
+			Date timestamp = XTimeExtension.instance().extractTimestamp(event);
 			String eventType = XLifecycleExtension.instance()
 					.extractTransition(event); // EventType
 			trace.addEvent(new Event(activityName, timestamp));

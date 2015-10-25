@@ -10,6 +10,10 @@ public class Event {
 		return name;
 	}
 
+	public Date getTimestamp() {
+		return timestamp;
+	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -23,6 +27,22 @@ public class Event {
 	@Override
 	public String toString() {
 		return "Event [name=" + name + "]";
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final Event event = (Event) obj;
+		if (!(event.getName().equals(this.getName()) && event.getTimestamp()
+				.equals(this.getTimestamp()))) {
+			return false;
+		}
+		return true;
 	}
 
 }

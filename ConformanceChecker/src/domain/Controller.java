@@ -15,22 +15,19 @@ public class Controller {
 		Log log = EntityManager.getLog("test.xes");
 		// Testing Places
 		// Testing Places
-		for (Place place : petri.getPlaces()) {
+		//for (Place place : petri.getPlaces()) {
 
-		}
+		//}
 		// Testing Transitions
 
-		for (Transition transition : petri.getTransitions()) {
+		//for (Transition transition : petri.getTransitions()) {
 			// System.out.println("Transition id: " +
 			// transition.getEventName());
 
-		}
+		//}
 		for (Trace trace : log.getTraces()) {
-			System.out.println("Trace name" + trace.getName());
-			// transition.getEventName());
-			for (Event e : trace.getEvents()) {
-				System.out.println(e.toString());
-			}
+			System.out.println("Trace name " + trace.getName());
+			System.out.println("Num of instances " + trace.getNumberOfInstances());
 
 		}
 	}
