@@ -1,8 +1,6 @@
 package petri;
 
 public class Arc {
-
-	private String id;
 	// if true then from Place to Transition, if false then from Transition to
 	// Place
 	// Place
@@ -25,22 +23,22 @@ public class Arc {
 		return place;
 	}
 
-	public String getSourceId() {
+	public String getSourceName() {
 		// from place to transition
 		if (this.direction)
-			return this.place.getId();
+			return this.place.getName();
 		// from transition to place
 		else
 			return this.transition.getEventName();
 	}
 
-	public String getTargetId() {
+	public String getTargetName() {
 		// from place to transition
 		if (this.direction)
 			return this.transition.getEventName();
 		// from transition to place
 		else
-			return this.place.getId();
+			return this.place.getName();
 	}
 
 	public boolean isDirection() {

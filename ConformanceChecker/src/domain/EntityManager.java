@@ -90,8 +90,8 @@ public class EntityManager {
 				if ((edge.getTarget().getLabel()).equals(transition
 						.getEventName())) {
 					Arc arc = new Arc(true, transition, place);
-					place.addEdge(arc);
-					transition.addEdge(arc);
+					place.addArc(arc);
+					transition.addArc(arc);
 
 				}
 			}
@@ -108,8 +108,8 @@ public class EntityManager {
 				if ((edge.getSource().getLabel()).equals(transition
 						.getEventName())) {
 					Arc arc = new Arc(false, transition, place);
-					place.addEdge(arc);
-					transition.addEdge(arc);
+					place.addArc(arc);
+					transition.addArc(arc);
 				}
 			}
 		}
@@ -134,7 +134,7 @@ public class EntityManager {
 				Trace trace = new Trace(XConceptExtension.instance()
 						.extractName(xtrace));
 				populateEvents(xtrace, trace);
-				
+
 				addTraceToLog(log, trace);
 
 			}
@@ -147,7 +147,7 @@ public class EntityManager {
 		for (Trace existingTrace : log.getTraces()) {
 			if (existingTrace.equals(trace)) {
 				existingTrace.addInstance();
-				return;				
+				return;
 			}
 		}
 		log.addTrace(trace);

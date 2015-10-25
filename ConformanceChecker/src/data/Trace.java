@@ -19,20 +19,12 @@ public class Trace {
 		return events;
 	}
 
-	public void setEvents(List<Event> events) {
-		this.events = events;
-	}
-
 	public String getName() {
 		return name;
 	}
 
 	public int getNumberOfInstances() {
 		return numberOfInstances;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public void addEvent(Event event) {

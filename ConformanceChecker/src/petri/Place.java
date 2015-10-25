@@ -5,43 +5,30 @@ import java.util.HashSet;
 
 public class Place {
 
-	private String id; // p1
-	private String name; // TODO: need both?
+	private String name; // p1
 	private int numberOfTokens;
 	private Collection<Arc> arcs;
 
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
+	public String getName() {
+		return name;
 	}
 
 	public int getNumberOfTokens() {
 		return numberOfTokens;
 	}
 
-	public void setNumberOfTokens(int numberOfTokens) {
-		this.numberOfTokens = numberOfTokens;
-	}
-
 	public Collection<Arc> getArcs() {
 		return arcs;
 	}
 
-	public void setArcs(Collection<Arc> arcs) {
-		this.arcs = arcs;
-	}
-
-	public Place(String id) {
+	public Place(String name) {
 		super();
-		this.id = id;
+		this.name = name;
 		this.numberOfTokens = 0;
 		this.arcs = new HashSet<Arc>();
 	}
 
-	public void addEdge(Arc arc) {
+	public void addArc(Arc arc) {
 		this.arcs.add(arc);
 	}
 

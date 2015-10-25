@@ -25,7 +25,4 @@ public class Log {
 		return traces;
 	}
 
-	public void setTraces(List<Trace> traces) {
-		this.traces = traces;
-	}
 }

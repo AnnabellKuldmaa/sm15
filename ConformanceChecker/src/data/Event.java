@@ -14,10 +14,6 @@ public class Event {
 		return timestamp;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public Event(String name, Date timestamp) {
 		super();
 		this.name = name;

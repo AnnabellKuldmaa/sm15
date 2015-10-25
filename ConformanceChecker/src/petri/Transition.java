@@ -5,8 +5,7 @@ import java.util.HashSet;
 
 public class Transition {
 
-	private String id;
-	private String eventName; // TODO: need both?
+	private String eventName; 
 	private Boolean enabled;
 	private Collection<Arc> arcs;
 
@@ -17,24 +16,12 @@ public class Transition {
 		this.arcs = new HashSet<Arc>();
 	}
 
-	public void addEdge(Arc arc) {
+	public void addArc(Arc arc) {
 		this.arcs.add(arc);
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	public String getEventName() {
 		return eventName;
-	}
-
-	public void setEventName(String eventName) {
-		this.eventName = eventName;
 	}
 
 	public Boolean isEnabled() {
@@ -47,10 +34,6 @@ public class Transition {
 
 	public Collection<Arc> getArcs() {
 		return arcs;
-	}
-
-	public void setArcs(Collection<Arc> arcs) {
-		this.arcs = arcs;
 	}
 
 	public Collection<Place> getIncomingPlaces() {
