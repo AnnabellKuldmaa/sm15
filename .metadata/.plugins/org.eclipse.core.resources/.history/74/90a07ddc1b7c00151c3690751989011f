@@ -1,0 +1,155 @@
+package domain;
+
+import petri.Arc;
+import petri.PetriNet;
+import petri.Place;
+import petri.Transition;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import data.Event;
+import data.Log;
+import data.Trace;
+
+public class Controller {
+
+	public static void main(String[] args) {
+		String xPathOfPetriNet = "test.pnml";
+		String xPathOfLog = "test.xes";
+		PetriNet petri = EntityManager.getPetryNet(xPathOfPetriNet);
+		Log log = EntityManager.getLog(xPathOfLog);
+		
+		Collection<Place> places = petri.getPlaces();
+		
+		// Testing Places
+		for (Place place : places) {
+			System.out.println("Place id: " + place.getName());
+		}
+		
+		Collection<Transition> transitions = petri.getTransitions();
+		// Testing Transitions
+		for (Transition transition : transitions) {
+			System.out.println("Transition id: " + transition.getEventName());
+		}
+		
+		int T_v = transitions.size();
+		System.out.println("T_v=" + T_v);
+		
+		int N = places.size() + transitions.size();
+		System.out.println("N=" + N);		
+				
+		List<Trace> traces = log.getTraces();
+				
+		// Testing traces
+		for (Trace trace : traces) {
+			System.out.println("Trace name " + trace.getName());
+			System.out.println("Num of instances " + trace.getNumberOfInstances());
+		}
+		
+		int k = traces.size();
+		
+		List<Integer> n = new ArrayList<Integer>();
+		List<Integer> m = new ArrayList<Integer>();
+		List<Integer> r = new ArrayList<Integer>();
+		List<Integer> c = new ArrayList<Integer>();
+		List<Integer> p = new ArrayList<Integer>();
+		List<Integer> x = new ArrayList<Integer>();
+		
+		for (Trace trace : traces) {
+			
+			PetriNet petrinet = new PetriNet("ID", transitions, places);
+			
+			int n_i = trace.getNumberOfInstances();
+			int L_i = trace.getNumberOfInstances();
+			int p_i = 0;
+			int c_i = 0;
+			int m_i = 0;
+			int numberOfEnabledTransitions = 0;
+			
+			// Start of the first step
+			
+			// Add the first token
+			Place currentPlace = petrinet.getStartPlace();
+			currentPlace.produceToken();
+			p_i++;
+			
+			Collection<Transition> outTransitions = currentPlace.getOutgoingTransitions();
+			
+			// Enable necessary transitions
+			for (Transition outTransition : outTransitions) {
+				Collection<Place> inPlaces = outTransition.getIncomingPlaces();
+				boolean enabled = true;
+				for (Place inPlace : inPlaces) {
+					if (inPlace.hasTokens() == false) {
+						enabled = false;
+					}
+				}
+				if (enabled) {
+					outTransition.setEnabled(enabled);
+				}				
+			}
+			// Semi-end of first step
+			List<Event> events =  trace.getEvents();
+			
+			for (Event event : events) {
+				String eventName = event.getName();
+				Transition transition = new Transition(eventName);
+				
+				// End of first step
+				// Start of second step
+				
+				if (transition.isEnabled()) {
+					currentPlace.consumeToken();
+					c_i++;
+					transition.setEnabled(false);
+				} else {
+					m_i++;
+				}
+				
+				Collection<Place> outPlaces =  transition.getOutgoingPlaces();
+				// Produce tokens
+				for (Place outPlace : outPlaces) {
+					outPlace.produceToken();
+					p_i++;
+				}
+				
+				// (Dis)enable transitions
+				for (Place outPlace : outPlaces) {
+					Collection<Transition> outTrans = outPlace.getOutgoingTransitions();
+					for (Transition outTran : outTrans) {
+						boolean enabled = true;
+						Collection<Place> inPlaces = outTran.getIncomingPlaces();
+						for (Place inPlace : inPlaces) {
+							if (! inPlace.hasTokens()) {
+								enabled = false;
+							}
+						}
+						outTran.setEnabled(enabled);
+					}
+				}
+				
+				numberOfEnabledTransitions =  petrinet.getNumberOfEnabledTransitions();
+				
+				// End of step
+			}
+			
+			int r_i = petrinet.getNumberOfTokens();
+			
+			// Add to lists
+			n.add(n_i);
+			m.add(m_i);
+			r.add(r_i);
+			p.add(p_i);
+			c.add(c_i);
+			x.add(numberOfEnabledTransitions / n_i);
+			
+		}
+		
+		for (int n_i : n) {
+			System.out.print(n_i + ", ");
+		}
+	}
+
+}

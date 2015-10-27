@@ -8,6 +8,7 @@ k - number of different traces in log - len(cases)
 n_i - number of process instances combined into current trace - len(trace)
 x_i - mean number of enabled transitions during log replay of the current trace - mean(num_of_enabled_transitions)
 N - the set of nodes (i.e. places and transitions) in the Petri net model - transitions.length() + places.length()
+L -s the set of distinct labels associated to transitions. In your case, you cannot have two transitions with the same label in the Petri net, so the number of labels coincide with the number of transitions.
 
 input:
 Petrinet input_petrinet
@@ -35,7 +36,7 @@ for each case in cases: # 1207: ABDEA
 	Integer n_i = trace.length()
 	Integer L_i = trace.length()
 	
-	Integer num_of_enabled_transitions = 0 # later x_i = num_of_enabled_transitions / n_i
+	#Integer num_of_enabled_transitions = 0 # later x_i = num_of_enabled_transitions / n_i
 	
 	# Start of first step
 	
@@ -55,7 +56,7 @@ for each case in cases: # 1207: ABDEA
 				enabled = False
 		if enabled:
 			outT.setEnabled(enabled)
-			num_of_enabled_transitions++
+			#num_of_enabled_transitions++
 	
 	# Semi-end of first step
 	
@@ -73,7 +74,7 @@ for each case in cases: # 1207: ABDEA
 			currentPlace.consumeToken())
 			c_i ++
 			transition.setEnabled(False)
-			num_of_enabled_transitions--
+			#num_of_enabled_transitions--
 		else:
 			m_i ++
 		
@@ -119,6 +120,16 @@ for each case in cases: # 1207: ABDEA
 # esimene step:
 #paneme algusesse tokeni. enableme vajalikud transitionid ja läbime
 
+# issued endale:
+# sequence diagram: int muutujate loomine, createList
+# collection / list
+# New PetriNet(ID)
+# sequence diagrammis jooned, kui midagi ei tagasta
+# 6 pts. Consistency between Code and Documentation
+# Kuidas saame aru, et place on end-place, pole out-arce?
+
 #RESOLVED:
 # Kas võib eeldada, et alguses/kogu petrinetis ei ole ühtegi tokenit? Jah, ühtegi tokenit ei ole alguses
 # WTF L?: erineate labelite arv lggis
+
+# f = 0.5*(1 - (4*0 + 3*0) / (4*4 + 3*3)) + 0.5*(1 - (4*0 + 3*0) / (4*4 + 3*3)) = 1.0
