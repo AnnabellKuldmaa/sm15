@@ -1,1 +1,6 @@
 ConformanceChecker/bin
+*.class
+.metadata
+.settings/
+.loadpath
+.recommenders

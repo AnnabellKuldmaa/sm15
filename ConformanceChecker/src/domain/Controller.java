@@ -89,16 +89,18 @@ public class Controller {
 			List<Integer> numberOfEnabledTransitions = new ArrayList<Integer>();
 			int numberOfEnabledTransitions_i = 0;
 			
-			// Start of the first step
+			Place currentPlace = null;
 			
+			// Start of the first step
+	
 			// Add the first token to start place
-			// TODO: is this added always or depends of the first event in the trace?
-			Place currentPlace = petrinet.getStartPlace();
+			currentPlace = petrinet.getStartPlace();
 			currentPlace.produceToken();
 			p_i++;
-			
+			System.out.println("Produced token to " + currentPlace.getName());
+
 			Collection<Transition> outTransitions = currentPlace.getOutgoingTransitions();
-			
+
 			// Enable necessary transitions
 			for (Transition outTransition : outTransitions) {
 				Collection<Place> inPlaces = outTransition.getIncomingPlaces();
@@ -112,89 +114,102 @@ public class Controller {
 					outTransition.setEnabled(enabled);
 				}				
 			}
-			
+
 			numberOfEnabledTransitions_i = petrinet.getNumberOfEnabledTransitions();
 			numberOfEnabledTransitions.add(numberOfEnabledTransitions_i);
-			
+
 			System.out.println("Step 1: p_i=" + p_i + "; c_i=" + c_i + "; m_i=" + m_i + "; numberOfEnabledTransitions_i=" + numberOfEnabledTransitions_i);
 			
-			// Iterate over next steps
-			int step = 2;
-			List<Event> events =  trace.getEvents();	
-			for (Event event : events) {
+			// End of the first step
+
+			
+			// Iterate over events
+			List<Event> events =  trace.getEvents();
+			for (int step = 0; step < events.size(); step++) {
 				
+				Event event = events.get(step);
 				// Find respective transition
 				String eventName = event.getName();
 				Transition transition = petrinet.getTransitionWithName(eventName);
 				
-				// End of first step
-				
-				// Increase number of consumed tokens or missing tokens
-				if (transition.isEnabled()) {
-					// TODO: üle kõigi sissetulevate arcide
-					// TODO: update current place
-					currentPlace.consumeToken();
-					c_i++;
-					transition.setEnabled(false);
-				} else {
-					// TODO: suurenda vastavalt puuduolevate tokenite arvule
-					m_i++;
+				// Consume tokens or add missing tokens to the incoming places
+				Collection<Place> inPlaces = transition.getIncomingPlaces();
+				for (Place inPlace : inPlaces) {
+					if (inPlace.hasTokens()) {
+						inPlace.consumeToken();
+						c_i++;
+						System.out.println("Consumed token from " + inPlace.getName());
+					} else {
+						m_i++;
+						System.out.println("Missing token in " + inPlace.getName());
+					}
 				}
-				
-				// Produce tokens
+				transition.setEnabled(false);
+
+				// Produce tokens to the outgoing places
 				Collection<Place> outPlaces =  transition.getOutgoingPlaces();
 				for (Place outPlace : outPlaces) {
 					outPlace.produceToken();
 					p_i++;
+					System.out.println("Produced token to " + outPlace.getName());
 				}
-				
+
 				// (Dis)enable transitions
-				for (Place outPlace : outPlaces) {
-					Collection<Transition> outTrans = outPlace.getOutgoingTransitions();
-					for (Transition outTran : outTrans) {
-						boolean enabled = true;
-						Collection<Place> inPlaces = outTran.getIncomingPlaces();
-						for (Place inPlace : inPlaces) {
-							if (inPlace.hasTokens() == false) {
-								enabled = false;
-							}
+				for (Transition transition_2 : petrinet.getTransitions()) {
+					boolean enabled = true;
+					for (Place inPlace : transition_2.getIncomingPlaces()) {
+						if (inPlace.hasTokens() == false) {
+							enabled = false;
 						}
-						outTran.setEnabled(enabled);
+						transition_2.setEnabled(enabled);
 					}
 				}
-				
+
 				numberOfEnabledTransitions_i = petrinet.getNumberOfEnabledTransitions();
 				//System.out.println("numberOfEnabledTransitions_i " + numberOfEnabledTransitions_i);
 				numberOfEnabledTransitions.add(numberOfEnabledTransitions_i);
-				
+
 				// End of step
 				System.out.println("Step " + step + ": p_i=" + p_i + "; c_i=" + c_i + "; m_i=" + m_i + "; numberOfEnabledTransitions_i=" + numberOfEnabledTransitions_i);
-				step++;
+
+
 			}
 			
-			int n_i = events.size();
-			int r_i = petrinet.getNumberOfTokens();
+			// End
+			Place endPlace = petrinet.getEndPlace();
+			if (endPlace.hasTokens()) {
+				endPlace.consumeToken();
+				c_i++;
+				System.out.println("Consumed token from " + endPlace.getName());
+			} else {
+				m_i++;
+				System.out.println("Missing token in " + endPlace.getName());
+			}
 			
+			int n_i = trace.getNumberOfInstances();
+			int r_i = petrinet.getNumberOfTokens();
+
 			// Add to lists
 			n.add(n_i);
 			m.add(m_i);
 			r.add(r_i);
 			p.add(p_i);
 			c.add(c_i);
-			numberOfEnabledTransitions.add(numberOfEnabledTransitions_i);
-			
+
 			int numberOfEnabledTransitions_Sum = 0;
 			for (int i = 0; i < numberOfEnabledTransitions.size(); i++) {
-				System.out.println("numberOfEnabledTransitions.get(i) " + numberOfEnabledTransitions.get(i));
+				//System.out.println("numberOfEnabledTransitions.get(i) " + numberOfEnabledTransitions.get(i));
 				numberOfEnabledTransitions_Sum += numberOfEnabledTransitions.get(i);
 			}
 			
-			double x_i = numberOfEnabledTransitions_Sum / (double) n_i;
+			numberOfEnabledTransitions.add(numberOfEnabledTransitions_Sum);
+
+			double x_i = numberOfEnabledTransitions_Sum / (double) events.size();
 			x.add(x_i);
-			
+
 			System.out.println("p_i=" + p_i + "; c_i=" + c_i + "; m_i=" + m_i + "; numberOfEnabledTransitions_Sum=" + 
-								numberOfEnabledTransitions_Sum + "; x_i=" + x_i + "; r_i=" + r_i + "; n_i=" + n_i);
-			
+					numberOfEnabledTransitions_Sum + "; x_i=" + x_i + "; r_i=" + r_i + "; n_i=" + n_i);
+
 			System.out.println();
 			
 		}

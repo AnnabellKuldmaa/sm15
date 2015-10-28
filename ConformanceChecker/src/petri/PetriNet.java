@@ -31,8 +31,10 @@ public class PetriNet {
 	public int getNumberOfEnabledTransitions() {
 		int numberOfEnabledTransitions = 0;
 		for (Transition transition : this.transitions) {
-			if (transition.isEnabled())
+			if (transition.isEnabled()) {
+				System.out.println("Enabled transition:" + transition.getEventName());
 				numberOfEnabledTransitions++;
+			}
 		}
 		return numberOfEnabledTransitions;
 	}

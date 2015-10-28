@@ -1,2 +1,6 @@
-/bin
+/bin/
 *.class
+.metadata
+.settings/
+.loadpath
+.recommenders
