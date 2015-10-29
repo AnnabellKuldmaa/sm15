@@ -35,6 +35,14 @@ public class Trace {
 		return numberOfInstances;
 	}
 	
+	public void addEvent(Event event) {
+		this.events.add(event);
+	}
+
+	public void addInstance() {
+		this.numberOfInstances++;
+	}
+	
 	public void increaseNumberOfMissingTokens() {
 		this.numberOfMissingTokens++;
 	}
@@ -81,14 +89,6 @@ public class Trace {
 	
 	public double getMeanNumberOfEnabledTransitions() {
 		return meanNumberOfEnabledTransitions;
-	}
-
-	public void addEvent(Event event) {
-		this.events.add(event);
-	}
-
-	public void addInstance() {
-		this.numberOfInstances++;
 	}
 
 	@Override

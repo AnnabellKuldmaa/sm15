@@ -44,13 +44,12 @@ public class PetriNet {
 	}
 
 	public Place getStartPlace() {
-		Place startPlace = null;
 		for (Place place : this.places) {
 			Collection<Transition> inTransitions = place.getIncomingTransitions();
 			if (inTransitions.size() == 0)
-				startPlace = place;
+				return place;
 		}
-		return startPlace;
+		return null;
 	}
 
 	public Place getEndPlace() {

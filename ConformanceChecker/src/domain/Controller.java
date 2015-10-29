@@ -65,7 +65,7 @@ public class Controller {
 					trace.increaseNumberOfProducedTokens();
 				}
 
-				// (Dis)enable transitions
+				// Enable/disable transitions
 				Collection<Transition> transitions = petriNet.getTransitions();
 				petriNet.enableTransitions(transitions);
 				numberOfEnabledTransitions = petriNet.getNumberOfEnabledTransitions();

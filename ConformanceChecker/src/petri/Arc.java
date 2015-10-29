@@ -1,9 +1,7 @@
 package petri;
 
 public class Arc {
-	// if true then from Place to Transition, if false then from Transition to
-	// Place
-	// Place
+	// if true then from Place to Transition, if false then from Transition to Place
 	private boolean direction;
 	private Transition transition;
 	private Place place;

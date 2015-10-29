@@ -8,6 +8,13 @@ public class Place {
 	private String name; // p1
 	private int numberOfTokens;
 	private Collection<Arc> arcs;
+	
+	public Place(String name) {
+		super();
+		this.name = name;
+		this.numberOfTokens = 0;
+		this.arcs = new HashSet<Arc>();
+	}
 
 	public String getName() {
 		return name;
@@ -23,13 +30,6 @@ public class Place {
 
 	public Collection<Arc> getArcs() {
 		return arcs;
-	}
-
-	public Place(String name) {
-		super();
-		this.name = name;
-		this.numberOfTokens = 0;
-		this.arcs = new HashSet<Arc>();
 	}
 
 	public void addArc(Arc arc) {
@@ -56,7 +56,7 @@ public class Place {
 		return outTransitions;
 	}
 
-	public boolean hasTokens() {
+	public Boolean hasTokens() {
 		if (this.numberOfTokens > 0)
 			return true;
 		else

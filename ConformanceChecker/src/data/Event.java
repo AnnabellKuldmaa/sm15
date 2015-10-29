@@ -5,6 +5,12 @@ import java.util.Date;
 public class Event {
 	private String name;
 	private Date timestamp;
+	
+	public Event(String name, Date timestamp) {
+		super();
+		this.name = name;
+		this.timestamp = timestamp;
+	}
 
 	public String getName() {
 		return name;
@@ -12,17 +18,6 @@ public class Event {
 
 	public Date getTimestamp() {
 		return timestamp;
-	}
-
-	public Event(String name, Date timestamp) {
-		super();
-		this.name = name;
-		this.timestamp = timestamp;
-	}
-
-	@Override
-	public String toString() {
-		return "Event [name=" + name + "]";
 	}
 
 	@Override
@@ -39,6 +34,11 @@ public class Event {
 			return false;
 		}
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return "Event [name=" + name + "]";
 	}
 
 }
