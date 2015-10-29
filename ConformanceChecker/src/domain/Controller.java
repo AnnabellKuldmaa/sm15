@@ -22,19 +22,12 @@ public class Controller {
 		
 		for (Trace trace : traces) {
 			
-			System.out.print("trace: ");
-			for (Event event : trace.getEvents()) {
-				System.out.print(event.getName());
-			}
-			System.out.println();
-			
 			// Start of the first step
 	
 			// Add the first token to start place
 			Place startPlace = petriNet.getStartPlace();
 			startPlace.produceToken();
 			trace.increaseNumberOfProducedTokens();
-			System.out.println("Produced token to " + startPlace.getName());
 			
 			// Enable necessary transitions
 			Collection<Transition> outTransitions = startPlace.getOutgoingTransitions();
@@ -59,10 +52,8 @@ public class Controller {
 					if (hasTokens) {
 						inPlace.consumeToken();
 						trace.increaseNumberOfConsumedTokens();
-						System.out.println("Consumed token from " + inPlace.getName());
 					} else {
 						trace.increaseNumberOfMissingTokens();
-						System.out.println("Missing token in " + inPlace.getName());
 					}
 				}
 				//transition.setEnabled(false);
@@ -72,7 +63,6 @@ public class Controller {
 				for (Place outPlace : outPlaces) {
 					outPlace.produceToken();
 					trace.increaseNumberOfProducedTokens();
-					System.out.println("Produced token to " + outPlace.getName());
 				}
 
 				// (Dis)enable transitions
@@ -89,10 +79,8 @@ public class Controller {
 			if (hasTokens) {
 				endPlace.consumeToken();
 				trace.increaseNumberOfConsumedTokens();
-				System.out.println("Consumed token from " + endPlace.getName());
 			} else {
 				trace.increaseNumberOfMissingTokens();
-				System.out.println("Missing token in " + endPlace.getName());
 			}
 			
 			int numberOfTokens = petriNet.getNumberOfTokens();
@@ -101,12 +89,8 @@ public class Controller {
 			numberOfEnabledTransitions = trace.getNumberOfEnabledTransitions();
 			trace.computeMeanNumberOfEnabledTransitions(numberOfEnabledTransitions, events.size());
 			
-			// Clean petrinet: number of tokens to zero and disenable transitions
-			petriNet.clearPetrinet();
-			
-			System.out.println(trace.toString());
-			System.out.println();
-			
+			// Clean petrinet: number of tokens to zero and disable transitions
+			petriNet.clearPetrinet();			
 		}
 		
 		Collection<Place> places = petriNet.getPlaces();	
