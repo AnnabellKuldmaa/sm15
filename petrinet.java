@@ -120,14 +120,6 @@ for each case in cases: # 1207: ABDEA
 # esimene step:
 #paneme algusesse tokeni. enableme vajalikud transitionid ja läbime
 
-# issued endale:
-# sequence diagram: int muutujate loomine, createList
-# collection / list
-# New PetriNet(ID)
-# sequence diagrammis jooned, kui midagi ei tagasta
-# 6 pts. Consistency between Code and Documentation
-# Kuidas saame aru, et place on end-place, pole out-arce?
-
 #RESOLVED:
 # Kas võib eeldada, et alguses/kogu petrinetis ei ole ühtegi tokenit? Jah, ühtegi tokenit ei ole alguses
 # WTF L?: erineate labelite arv lggis

@@ -43,7 +43,7 @@ public class EntityManager {
 			Collection<petri.Place> places = new HashSet<petri.Place>();
 			Collection<petri.Transition> transitions = new HashSet<petri.Transition>();
 			populatePlacesAndTransitions(net, places, transitions);
-			return new PetriNet(net.getLabel(), transitions, places);
+			return new PetriNet(transitions, places);
 
 		} catch (Exception e) {
 			e.printStackTrace();
