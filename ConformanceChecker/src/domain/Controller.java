@@ -22,15 +22,19 @@ public class Controller {
 		Collection<Transition> transitions = petri.getTransitions();				
 		List<Trace> traces = log.getTraces();
 		
+		int numberOfTransitions = transitions.size(); // |T_v|, |L|
+		int numberOfPlaces = places.size();
+		
 		for (Trace trace : traces) {
 			
-			System.out.print("Trace: ");
+			System.out.print("trace: ");
 			for (Event event : trace.getEvents()) {
 				System.out.print(event.getName());
 			}
 			System.out.println();
 			
-			PetriNet petrinet = new PetriNet("ID", transitions, places);
+			// Initialize new petrinet
+			PetriNet petrinet = new PetriNet(transitions, places);
 			
 			// Start of the first step
 	
@@ -39,33 +43,17 @@ public class Controller {
 			startPlace.produceToken();
 			trace.increaseNumberOfProducedTokens();
 			System.out.println("Produced token to " + startPlace.getName());
-
-			Collection<Transition> outTransitions = startPlace.getOutgoingTransitions();
-
+			
 			// Enable necessary transitions
-			for (Transition outTransition : outTransitions) {
-				Collection<Place> inPlaces = outTransition.getIncomingPlaces();
-				boolean enabled = true;
-				for (Place inPlace : inPlaces) {
-					if (inPlace.hasTokens() == false) {
-						enabled = false;
-					}
-				}
-				if (enabled) {
-					outTransition.setEnabled(enabled);
-				}				
-			}
-
+			petrinet.enableTransitions(startPlace.getOutgoingTransitions());
 			trace.increaseNumberOfEnabledTransitions(petrinet.getNumberOfEnabledTransitions());
 			
 			// End of the first step
 
-			
 			// Iterate over events
 			List<Event> events =  trace.getEvents();
-			for (int step = 0; step < events.size(); step++) {
-				
-				Event event = events.get(step);
+			for (Event event : events) {
+
 				// Find respective transition
 				String eventName = event.getName();
 				Transition transition = petrinet.getTransitionWithName(eventName);
@@ -93,16 +81,7 @@ public class Controller {
 				}
 
 				// (Dis)enable transitions
-				for (Transition transition_2 : petrinet.getTransitions()) {
-					boolean enabled = true;
-					for (Place inPlace : transition_2.getIncomingPlaces()) {
-						if (inPlace.hasTokens() == false) {
-							enabled = false;
-						}
-						transition_2.setEnabled(enabled);
-					}
-				}
-
+				petrinet.enableTransitions(petrinet.getTransitions());
 				trace.increaseNumberOfEnabledTransitions(petrinet.getNumberOfEnabledTransitions());
 			}
 			
@@ -127,10 +106,7 @@ public class Controller {
 		
 		double fitness = computeFitness(traces);
 		System.out.println("Fitness: " + fitness); // 1.0
-		
-		int numberOfTransitions = transitions.size(); // |T_v|, |L|
-		int numberOfPlaces = places.size();
-		
+				
 		double behavAppropr = computeBehavAppropr(traces, numberOfTransitions);
 		System.out.println("Simple Behavioral Appropriateness: " + behavAppropr); // 0.9236111
 		
@@ -140,12 +116,8 @@ public class Controller {
 			
 	}
 	
-	//public double computeFitness(String xPathOfPetriNet, String xPathOfLog) {
+	// Compute Fitness
 	public double computeFitness(List<Trace> traces) {
-		//Log log = EntityManager.getLog(xPathOfLog);
-		//List<Trace> traces = log.getTraces();
-		
-		// Compute Fitness
 		int nm = 0;
 		int nc = 0;
 		int nr = 0;
@@ -156,29 +128,25 @@ public class Controller {
 			nr += trace.getNumberOfInstances() * trace.getNumberOfRemainingTokens();
 			np += trace.getNumberOfInstances() * trace.getNumberOfProducedTokens();
 		}
-
 		double fitness = 0.5 * (1 - nm / nc) + 0.5 * (1 - nr / np);
 		return fitness;
 	}
 	
+	// Compute Simple Behavioral Appropriateness
 	public double computeBehavAppropr(List<Trace> traces, int numberOfTransitions) {
-		
-		// Compute Simple Behavioral Appropriateness
 		double numerator = 0;
 		int sumOfInstances = 0;
 		for (Trace trace : traces) {
 			numerator += trace.getNumberOfInstances() * (numberOfTransitions - trace.getMeanNumberOfEnabledTransitions());
 			sumOfInstances += trace.getNumberOfInstances();
 		}
-		
 		double behavAppropr = numerator / (double) ((numberOfTransitions - 1) * sumOfInstances);
 		return behavAppropr;
 	}
 	
-	public double computeStructAppropr(int numberOfTransitions, int numberofNodes) {
-		
-		// Compute Simple Structural Appropriateness
-		double structAppropr = (numberOfTransitions + 2) / (double) numberofNodes;
+	// Compute Simple Structural Appropriateness
+	public double computeStructAppropr(int numberOfTransitions, int numberOfNodes) {
+		double structAppropr = (numberOfTransitions + 2) / (double) numberOfNodes;
 		return structAppropr;
 	}
 

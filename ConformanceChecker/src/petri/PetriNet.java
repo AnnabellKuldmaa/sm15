@@ -12,7 +12,7 @@ public class PetriNet {
 		super();
 	}
 
-	public PetriNet(String id, Collection<Transition> transitions,
+	public PetriNet(Collection<Transition> transitions,
 			Collection<Place> places) {
 		super();
 		this.id = id;
@@ -26,17 +26,6 @@ public class PetriNet {
 
 	public Collection<Place> getPlaces() {
 		return places;
-	}
-
-	public int getNumberOfEnabledTransitions() {
-		int numberOfEnabledTransitions = 0;
-		for (Transition transition : this.transitions) {
-			if (transition.isEnabled()) {
-				System.out.println("Enabled transition:" + transition.getEventName());
-				numberOfEnabledTransitions++;
-			}
-		}
-		return numberOfEnabledTransitions;
 	}
 
 	public int getNumberOfTokens() {
@@ -70,5 +59,28 @@ public class PetriNet {
 				return place;
 		}
 		return null;
+	}
+	
+	public void enableTransitions(Collection<Transition> transitions) {
+		for (Transition transition : transitions) {
+			boolean enabled = true;
+			for (Place inPlace : transition.getIncomingPlaces()) {
+				if (inPlace.hasTokens() == false) {
+					enabled = false;
+				}
+			}
+			transition.setEnabled(enabled);
+		}
+	}
+	
+	public int getNumberOfEnabledTransitions() {
+		int numberOfEnabledTransitions = 0;
+		for (Transition transition : this.transitions) {
+			if (transition.isEnabled()) {
+				System.out.println("Enabled transition:" + transition.getEventName());
+				numberOfEnabledTransitions++;
+			}
+		}
+		return numberOfEnabledTransitions;
 	}
 }
