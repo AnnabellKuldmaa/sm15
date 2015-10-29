@@ -65,9 +65,8 @@ public class PetriNet {
 		for (Transition transition : transitions) {
 			boolean enabled = true;
 			for (Place inPlace : transition.getIncomingPlaces()) {
-				if (inPlace.hasTokens() == false) {
+				if (inPlace.hasTokens() == false)
 					enabled = false;
-				}
 			}
 			transition.setEnabled(enabled);
 		}
@@ -76,10 +75,8 @@ public class PetriNet {
 	public int getNumberOfEnabledTransitions() {
 		int numberOfEnabledTransitions = 0;
 		for (Transition transition : this.transitions) {
-			if (transition.isEnabled()) {
-				System.out.println("Enabled transition:" + transition.getEventName());
+			if (transition.isEnabled())
 				numberOfEnabledTransitions++;
-			}
 		}
 		return numberOfEnabledTransitions;
 	}
