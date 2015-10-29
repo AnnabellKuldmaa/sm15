@@ -9,9 +9,7 @@ import java.util.Date;
 import java.util.HashSet;
 
 import org.deckfour.xes.extension.std.XConceptExtension;
-import org.deckfour.xes.extension.std.XLifecycleExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
-import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
@@ -159,8 +157,6 @@ public class EntityManager {
 			String activityName = XConceptExtension.instance().extractName(
 					event);
 			Date timestamp = XTimeExtension.instance().extractTimestamp(event);
-			String eventType = XLifecycleExtension.instance()
-					.extractTransition(event); // EventType
 			trace.addEvent(new Event(activityName, timestamp));
 		}
 	}

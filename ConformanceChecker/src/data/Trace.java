@@ -31,10 +31,6 @@ public class Trace {
 		return events;
 	}
 
-	public String getName() {
-		return name;
-	}
-
 	public int getNumberOfInstances() {
 		return numberOfInstances;
 	}
@@ -71,16 +67,16 @@ public class Trace {
 		return numberOfRemainingTokens;
 	}
 	
-	public void increaseNumberOfEnabledTransitions(double numberOfEnabledTransitions) {
+	public void increaseNumberOfEnabledTransitions(int numberOfEnabledTransitions) {
 		this.numberOfEnabledTransitions += numberOfEnabledTransitions;
 	}
 	
-	public int getnumberOfEnabledTransitions() {
+	public int getNumberOfEnabledTransitions() {
 		return numberOfEnabledTransitions;
 	}
 	
-	public void setMeanNumberOfEnabledTransitions(double meanNumberOfEnabledTransitions) {
-		this.meanNumberOfEnabledTransitions = meanNumberOfEnabledTransitions;
+	public void computeMeanNumberOfEnabledTransitions(int numberOfEnabledTransitions, int numberOfEvents) {
+		this.meanNumberOfEnabledTransitions = numberOfEnabledTransitions / (double) numberOfEvents;
 	}
 	
 	public double getMeanNumberOfEnabledTransitions() {
@@ -119,7 +115,7 @@ public class Trace {
 	
 	@Override
 	public String toString() {
-		String info = "Trace " + name + 
+		String info = "Trace " +
 				"\nNumber of produced tokens: " + numberOfProducedTokens +
 				"\nNumber of consumed tokens: " + numberOfConsumedTokens +
 				"\nNumber of missing tokens: " + numberOfMissingTokens +

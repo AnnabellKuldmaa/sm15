@@ -4,7 +4,6 @@ import java.util.Collection;
 
 public class PetriNet {
 
-	private String id;
 	private Collection<Transition> transitions;
 	private Collection<Place> places;
 
@@ -15,7 +14,6 @@ public class PetriNet {
 	public PetriNet(Collection<Transition> transitions,
 			Collection<Place> places) {
 		super();
-		this.id = id;
 		this.transitions = transitions;
 		this.places = places;
 	}
@@ -46,11 +44,13 @@ public class PetriNet {
 	}
 
 	public Place getStartPlace() {
+		Place startPlace = null;
 		for (Place place : this.places) {
-			if (place.getIncomingTransitions().size() == 0)
-				return place;
+			Collection<Transition> inTransitions = place.getIncomingTransitions();
+			if (inTransitions.size() == 0)
+				startPlace = place;
 		}
-		return null;
+		return startPlace;
 	}
 
 	public Place getEndPlace() {
@@ -82,5 +82,14 @@ public class PetriNet {
 			}
 		}
 		return numberOfEnabledTransitions;
+	}
+	
+	public void clearPetrinet() {
+		for (Place place : this.places) {
+			place.setNumberOfTokens(0);
+		}
+		for (Transition transition : this.transitions) {
+			transition.setEnabled(false);
+		}
 	}
 }

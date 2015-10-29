@@ -12,6 +12,10 @@ public class Place {
 	public String getName() {
 		return name;
 	}
+	
+	public void setNumberOfTokens(int numberOfTokens) {
+		this.numberOfTokens = numberOfTokens;
+	}
 
 	public int getNumberOfTokens() {
 		return numberOfTokens;

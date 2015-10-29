@@ -14,16 +14,11 @@ import data.Trace;
 public class Controller {
 
 	public void doLogReplay(String xPathOfPetriNet, String xPathOfLog) {
-
-		PetriNet petri = EntityManager.getPetryNet(xPathOfPetriNet);
+		
+		PetriNet petriNet = EntityManager.getPetryNet(xPathOfPetriNet);
 		Log log = EntityManager.getLog(xPathOfLog);
-		
-		Collection<Place> places = petri.getPlaces();		
-		Collection<Transition> transitions = petri.getTransitions();				
+				
 		List<Trace> traces = log.getTraces();
-		
-		int numberOfTransitions = transitions.size(); // |T_v|, |L|
-		int numberOfPlaces = places.size();
 		
 		for (Trace trace : traces) {
 			
@@ -33,20 +28,19 @@ public class Controller {
 			}
 			System.out.println();
 			
-			// Initialize new petrinet
-			PetriNet petrinet = new PetriNet(transitions, places);
-			
 			// Start of the first step
 	
 			// Add the first token to start place
-			Place startPlace = petrinet.getStartPlace();
+			Place startPlace = petriNet.getStartPlace();
 			startPlace.produceToken();
 			trace.increaseNumberOfProducedTokens();
 			System.out.println("Produced token to " + startPlace.getName());
 			
 			// Enable necessary transitions
-			petrinet.enableTransitions(startPlace.getOutgoingTransitions());
-			trace.increaseNumberOfEnabledTransitions(petrinet.getNumberOfEnabledTransitions());
+			Collection<Transition> outTransitions = startPlace.getOutgoingTransitions();
+			petriNet.enableTransitions(outTransitions);
+			int numberOfEnabledTransitions = petriNet.getNumberOfEnabledTransitions();
+			trace.increaseNumberOfEnabledTransitions(numberOfEnabledTransitions);
 			
 			// End of the first step
 
@@ -56,12 +50,13 @@ public class Controller {
 
 				// Find respective transition
 				String eventName = event.getName();
-				Transition transition = petrinet.getTransitionWithName(eventName);
+				Transition transition = petriNet.getTransitionWithName(eventName);
 				
 				// Consume tokens or add missing tokens to the incoming places
 				Collection<Place> inPlaces = transition.getIncomingPlaces();
 				for (Place inPlace : inPlaces) {
-					if (inPlace.hasTokens()) {
+					boolean hasTokens = inPlace.hasTokens();
+					if (hasTokens) {
 						inPlace.consumeToken();
 						trace.increaseNumberOfConsumedTokens();
 						System.out.println("Consumed token from " + inPlace.getName());
@@ -70,7 +65,7 @@ public class Controller {
 						System.out.println("Missing token in " + inPlace.getName());
 					}
 				}
-				transition.setEnabled(false);
+				//transition.setEnabled(false);
 
 				// Produce tokens to the outgoing places
 				Collection<Place> outPlaces =  transition.getOutgoingPlaces();
@@ -81,13 +76,17 @@ public class Controller {
 				}
 
 				// (Dis)enable transitions
-				petrinet.enableTransitions(petrinet.getTransitions());
-				trace.increaseNumberOfEnabledTransitions(petrinet.getNumberOfEnabledTransitions());
+				Collection<Transition> transitions = petriNet.getTransitions();
+				petriNet.enableTransitions(transitions);
+				numberOfEnabledTransitions = petriNet.getNumberOfEnabledTransitions();
+				trace.increaseNumberOfEnabledTransitions(numberOfEnabledTransitions);
+				
 			}
 			
 			// End
-			Place endPlace = petrinet.getEndPlace();
-			if (endPlace.hasTokens()) {
+			Place endPlace = petriNet.getEndPlace();
+			boolean hasTokens = endPlace.hasTokens();
+			if (hasTokens) {
 				endPlace.consumeToken();
 				trace.increaseNumberOfConsumedTokens();
 				System.out.println("Consumed token from " + endPlace.getName());
@@ -96,28 +95,36 @@ public class Controller {
 				System.out.println("Missing token in " + endPlace.getName());
 			}
 			
-			trace.setNumberOfRemainingTokens(petrinet.getNumberOfTokens());
-			trace.setMeanNumberOfEnabledTransitions(trace.getnumberOfEnabledTransitions() / (double) events.size());
+			int numberOfTokens = petriNet.getNumberOfTokens();
+			trace.setNumberOfRemainingTokens(numberOfTokens);
+			
+			numberOfEnabledTransitions = trace.getNumberOfEnabledTransitions();
+			trace.computeMeanNumberOfEnabledTransitions(numberOfEnabledTransitions, events.size());
+			
+			// Clean petrinet: number of tokens to zero and disenable transitions
+			petriNet.clearPetrinet();
 			
 			System.out.println(trace.toString());
 			System.out.println();
 			
 		}
 		
+		Collection<Place> places = petriNet.getPlaces();	
+		Collection<Transition> transitions = petriNet.getTransitions();		
+		
 		double fitness = computeFitness(traces);
 		System.out.println("Fitness: " + fitness); // 1.0
 				
-		double behavAppropr = computeBehavAppropr(traces, numberOfTransitions);
+		double behavAppropr = computeBehavAppropr(traces, transitions.size());
 		System.out.println("Simple Behavioral Appropriateness: " + behavAppropr); // 0.9236111
 		
-		double structAppropr = computeStructAppropr(numberOfTransitions, numberOfTransitions + numberOfPlaces);
+		double structAppropr = computeStructAppropr(transitions.size(), places.size());
 		System.out.println("Simple Structural Appropriateness: " + structAppropr); // 0.7
-		
 			
 	}
 	
 	// Compute Fitness
-	public double computeFitness(List<Trace> traces) {
+	private double computeFitness(List<Trace> traces) {
 		int nm = 0;
 		int nc = 0;
 		int nr = 0;
@@ -133,7 +140,7 @@ public class Controller {
 	}
 	
 	// Compute Simple Behavioral Appropriateness
-	public double computeBehavAppropr(List<Trace> traces, int numberOfTransitions) {
+	private double computeBehavAppropr(List<Trace> traces, int numberOfTransitions) {
 		double numerator = 0;
 		int sumOfInstances = 0;
 		for (Trace trace : traces) {
@@ -145,8 +152,8 @@ public class Controller {
 	}
 	
 	// Compute Simple Structural Appropriateness
-	public double computeStructAppropr(int numberOfTransitions, int numberOfNodes) {
-		double structAppropr = (numberOfTransitions + 2) / (double) numberOfNodes;
+	private double computeStructAppropr(int numberOfTransitions, int numberOfPlaces) {
+		double structAppropr = (numberOfTransitions + 2) / (double) (numberOfTransitions + numberOfPlaces);
 		return structAppropr;
 	}
 
