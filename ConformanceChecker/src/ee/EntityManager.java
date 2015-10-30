@@ -112,7 +112,7 @@ public class EntityManager {
 
 	public static Log getLog(String xPathOfLog) throws Exception {
 		try {
-			XLog xlog = XLogReader.openLog("test.xes");
+			XLog xlog = XLogReader.openLog(xPathOfLog);
 			// Loop traces in a log
 			Log log = getLogFromXLog(xlog);
 			return log;

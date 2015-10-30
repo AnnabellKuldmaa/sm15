@@ -7,6 +7,9 @@ Annabell Kuldmaa, Gea Pajula
 This is a simple command line application for conformance checking.
 
 #For running from command line:
+$ java -jar ConformanceChecker.jar
+
+Or just run ant target:
 $ ant run
 
 Application asks for full path of the Petri net file (.pnml)

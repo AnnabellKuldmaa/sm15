@@ -28,15 +28,19 @@
 	<!-- Definitions of runnable ant targets.
          Run them from the command line by executing "ant [targetname]"  -->
 
-	<target name="run" depends="build" description="Run for testing">
-		<java classname="ee.Boundary" classpathref="run.classpath" fork="no" />
+	<target name="run" depends="build" description="Run for testing" >
+		<java classname="ee.Boundary" classpathref="run.classpath" fork="yes"
+		/>
 	</target>
 
 	<target name="build" description="Build the system">
 		<mkdir dir="${build.dir}" />
 		<mkdir dir="${build.classes.dir}" />
-		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="true" debuglevel="lines,vars,source" encoding="utf-8" compiler="modern" target="1.8" source="1.8">
-			<classpath refid="compile.classpath" />
+		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="true" 
+			debuglevel="lines,vars,source" encoding="utf-8" compiler="modern" 
+			target="1.8" source="1.8"
+			includeantruntime="false">
+			<classpath refid="compile.classpath"/>
 		</javac>
 	</target>
 
@@ -44,10 +48,6 @@
 	<target name="clean" description="Clean up build system results">
 		<delete dir="${build.dir}" />
 	</target>
-
-
-
-
 
 </project>
 
