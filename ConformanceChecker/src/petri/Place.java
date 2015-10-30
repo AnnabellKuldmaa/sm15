@@ -5,10 +5,10 @@ import java.util.HashSet;
 
 public class Place {
 
-	private String name; // p1
+	private String name;
 	private int numberOfTokens;
 	private Collection<Arc> arcs;
-	
+
 	public Place(String name) {
 		super();
 		this.name = name;
@@ -16,10 +16,6 @@ public class Place {
 		this.arcs = new HashSet<Arc>();
 	}
 
-	public String getName() {
-		return name;
-	}
-	
 	public void setNumberOfTokens(int numberOfTokens) {
 		this.numberOfTokens = numberOfTokens;
 	}
@@ -49,7 +45,7 @@ public class Place {
 	public Collection<Transition> getOutgoingTransitions() {
 		Collection<Transition> outTransitions = new HashSet<Transition>();
 		for (Arc arc : this.arcs) {
-			// From Transition to Place
+			// From Place to Transition
 			if (arc.isDirection())
 				outTransitions.add(arc.getTransition());
 		}

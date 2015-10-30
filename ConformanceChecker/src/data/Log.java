@@ -1,11 +1,11 @@
 package data;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 public class Log {
-	// TODO:Collection or List
-	private List<Trace> traces;
+	private Collection<Trace> traces;
 
 	public Log(List<Trace> traces) {
 		super();
@@ -14,14 +14,14 @@ public class Log {
 
 	public Log() {
 		super();
-		this.traces = new ArrayList<Trace>();
+		this.traces = new HashSet<Trace>();
 	}
 
 	public void addTrace(Trace trace) {
 		this.traces.add(trace);
 	}
 
-	public List<Trace> getTraces() {
+	public Collection<Trace> getTraces() {
 		return traces;
 	}
 

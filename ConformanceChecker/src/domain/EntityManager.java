@@ -33,20 +33,17 @@ import data.Trace;
 
 public class EntityManager {
 
-	public static PetriNet getPetryNet(String xPathOfPetriNet) {
+	public static PetriNet getPetryNet(String xPathOfPetriNet) throws Exception {
+
 		PnmlImportUtils utils = new PnmlImportUtils();
 		File file = new File(xPathOfPetriNet);
-		try {
-			PetrinetGraph net = getPetrinetGraph(utils, file);
-			Collection<petri.Place> places = new HashSet<petri.Place>();
-			Collection<petri.Transition> transitions = new HashSet<petri.Transition>();
-			populatePlacesAndTransitions(net, places, transitions);
-			return new PetriNet(transitions, places);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new PetriNet();
-		}
+		PetrinetGraph net = getPetrinetGraph(utils, file);
+		Collection<petri.Place> places = new HashSet<petri.Place>();
+		Collection<petri.Transition> transitions = new HashSet<petri.Transition>();
+		populatePlacesAndTransitions(net, places, transitions);
+		return new PetriNet(transitions, places);
+
 	}
 
 	private static PetrinetGraph getPetrinetGraph(PnmlImportUtils ut, File f)
@@ -62,7 +59,7 @@ public class EntityManager {
 
 	private static void populatePlacesAndTransitions(PetrinetGraph net,
 			Collection<petri.Place> places,
-			Collection<petri.Transition> transitions) {
+			Collection<petri.Transition> transitions) throws Exception {
 		Collection<Place> netPlaces = net.getPlaces();
 		Collection<Transition> netTransitions = net.getTransitions();
 		// Add Transitions
@@ -80,7 +77,7 @@ public class EntityManager {
 
 	private static void populateEdgesFromPlaces(PetrinetGraph net,
 			Collection<petri.Transition> transitions, Place netPlace,
-			petri.Place place) {
+			petri.Place place) throws Exception {
 		Collection<PetrinetEdge<? extends PetrinetNode, ? extends PetrinetNode>> outEdges = net
 				.getOutEdges(netPlace);
 		for (PetrinetEdge<? extends PetrinetNode, ? extends PetrinetNode> edge : outEdges) {
@@ -98,7 +95,7 @@ public class EntityManager {
 
 	private static void populatEdgesToPlaces(PetrinetGraph net,
 			Collection<petri.Transition> transitions, Place netPlace,
-			petri.Place place) {
+			petri.Place place) throws Exception {
 		Collection<PetrinetEdge<? extends PetrinetNode, ? extends PetrinetNode>> inEdges = net
 				.getInEdges(netPlace);
 		for (PetrinetEdge<? extends PetrinetNode, ? extends PetrinetNode> edge : inEdges) {
@@ -113,11 +110,11 @@ public class EntityManager {
 		}
 	}
 
-	public static Log getLog(String xPathOfLog) {
+	public static Log getLog(String xPathOfLog) throws Exception {
 		try {
 			XLog xlog = XLogReader.openLog("test.xes");
 			// Loop traces in a log
-			Log log = getLog(xlog);
+			Log log = getLogFromXLog(xlog);
 			return log;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -125,7 +122,7 @@ public class EntityManager {
 		}
 	}
 
-	private static Log getLog(XLog xlog) {
+	private static Log getLogFromXLog(XLog xlog) throws Exception {
 		Log log = new Log();
 		if (xlog.size() > 0) {
 			for (XTrace xtrace : xlog) {
@@ -141,7 +138,7 @@ public class EntityManager {
 		return log;
 	}
 
-	private static void addTraceToLog(Log log, Trace trace) {
+	private static void addTraceToLog(Log log, Trace trace) throws Exception {
 		for (Trace existingTrace : log.getTraces()) {
 			if (existingTrace.equals(trace)) {
 				existingTrace.addInstance();
@@ -152,7 +149,8 @@ public class EntityManager {
 
 	}
 
-	private static void populateEvents(XTrace xtrace, Trace trace) {
+	private static void populateEvents(XTrace xtrace, Trace trace)
+			throws Exception {
 		for (XEvent event : xtrace) {
 			String activityName = XConceptExtension.instance().extractName(
 					event);

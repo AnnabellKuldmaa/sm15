@@ -8,6 +8,7 @@
 	<property name="build.classes.dir" value="${build.dir}/classes" />
 	<property name="src.dir" value="${basedir}/src" />
 
+
 	<!-- Definitions of classpath variants used for different tasks -->
 	<path id="compile.classpath">
 		<fileset dir="lib">
@@ -28,7 +29,7 @@
          Run them from the command line by executing "ant [targetname]"  -->
 
 	<target name="run" depends="build" description="Run for testing">
-		<java classname="domain.Controller" classpathref="run.classpath" fork="yes" />
+		<java classname="domain.Boundary" classpathref="run.classpath" fork="no" />
 	</target>
 
 	<target name="build" description="Build the system">
@@ -43,6 +44,9 @@
 	<target name="clean" description="Clean up build system results">
 		<delete dir="${build.dir}" />
 	</target>
+
+
+
 
 
 </project>

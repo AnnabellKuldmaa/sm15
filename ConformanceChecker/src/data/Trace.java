@@ -1,6 +1,6 @@
 package data;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Trace {
@@ -17,7 +17,7 @@ public class Trace {
 	public Trace(String name) {
 		super();
 		this.name = name;
-		this.events = new ArrayList<Event>();
+		this.events = new LinkedList<Event>();
 		this.numberOfInstances = 1;
 		this.numberOfMissingTokens = 0;
 		this.numberOfProducedTokens = 0;
@@ -34,7 +34,7 @@ public class Trace {
 	public int getNumberOfInstances() {
 		return numberOfInstances;
 	}
-	
+
 	public void addEvent(Event event) {
 		this.events.add(event);
 	}
@@ -42,51 +42,54 @@ public class Trace {
 	public void addInstance() {
 		this.numberOfInstances++;
 	}
-	
+
 	public void increaseNumberOfMissingTokens() {
 		this.numberOfMissingTokens++;
 	}
-	
+
 	public int getNumberOfMissingTokens() {
 		return numberOfMissingTokens;
 	}
-	
+
 	public void increaseNumberOfProducedTokens() {
 		this.numberOfProducedTokens++;
 	}
-	
+
 	public int getNumberOfProducedTokens() {
 		return numberOfProducedTokens;
 	}
-	
+
 	public void increaseNumberOfConsumedTokens() {
 		this.numberOfConsumedTokens++;
 	}
-	
+
 	public int getNumberOfConsumedTokens() {
 		return numberOfConsumedTokens;
 	}
-	
+
 	public void setNumberOfRemainingTokens(int numberOfRemainingTokens) {
 		this.numberOfRemainingTokens = numberOfRemainingTokens;
 	}
-	
+
 	public int getNumberOfRemainingTokens() {
 		return numberOfRemainingTokens;
 	}
-	
-	public void increaseNumberOfEnabledTransitions(int numberOfEnabledTransitions) {
+
+	public void increaseNumberOfEnabledTransitions(
+			int numberOfEnabledTransitions) {
 		this.numberOfEnabledTransitions += numberOfEnabledTransitions;
 	}
-	
+
 	public int getNumberOfEnabledTransitions() {
 		return numberOfEnabledTransitions;
 	}
-	
-	public void computeMeanNumberOfEnabledTransitions(int numberOfEnabledTransitions, int numberOfEvents) {
-		this.meanNumberOfEnabledTransitions = numberOfEnabledTransitions / (double) numberOfEvents;
+
+	public void computeMeanNumberOfEnabledTransitions(
+			int numberOfEnabledTransitions, int numberOfEvents) {
+		this.meanNumberOfEnabledTransitions = numberOfEnabledTransitions
+				/ (double) numberOfEvents;
 	}
-	
+
 	public double getMeanNumberOfEnabledTransitions() {
 		return meanNumberOfEnabledTransitions;
 	}
@@ -112,17 +115,14 @@ public class Trace {
 
 		return true;
 	}
-	
-	@Override
-	public String toString() {
-		String info = "Trace " +
-				"\nNumber of produced tokens: " + numberOfProducedTokens +
-				"\nNumber of consumed tokens: " + numberOfConsumedTokens +
-				"\nNumber of missing tokens: " + numberOfMissingTokens +
-				"\nNumber of remaining tokens: " + numberOfRemainingTokens +
-				"\nNumber of enabled transitions: " + numberOfEnabledTransitions +
-				"\nMean number of enabled transitions: " + meanNumberOfEnabledTransitions;
-		return info;
-	}
-
+	/*
+	 * @Override public String toString() { String info = "Trace " +
+	 * "\nNumber of produced tokens: " + numberOfProducedTokens +
+	 * "\nNumber of consumed tokens: " + numberOfConsumedTokens +
+	 * "\nNumber of missing tokens: " + numberOfMissingTokens +
+	 * "\nNumber of remaining tokens: " + numberOfRemainingTokens +
+	 * "\nNumber of enabled transitions: " + numberOfEnabledTransitions +
+	 * "\nMean number of enabled transitions: " +
+	 * meanNumberOfEnabledTransitions; return info; }
+	 */
 }

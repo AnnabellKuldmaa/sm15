@@ -32,10 +32,6 @@ public class Transition {
 		this.enabled = enabled;
 	}
 
-	public Collection<Arc> getArcs() {
-		return arcs;
-	}
-
 	public Collection<Place> getIncomingPlaces() {
 		Collection<Place> inPlaces = new HashSet<Place>();
 		for (Arc arc : this.arcs) {

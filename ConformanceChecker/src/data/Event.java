@@ -5,7 +5,7 @@ import java.util.Date;
 public class Event {
 	private String name;
 	private Date timestamp;
-	
+
 	public Event(String name, Date timestamp) {
 		super();
 		this.name = name;
@@ -34,11 +34,6 @@ public class Event {
 			return false;
 		}
 		return true;
-	}
-	
-	@Override
-	public String toString() {
-		return "Event [name=" + name + "]";
 	}
 
 }
