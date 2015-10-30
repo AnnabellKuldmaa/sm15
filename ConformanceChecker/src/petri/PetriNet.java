@@ -60,7 +60,7 @@ public class PetriNet {
 		return null;
 	}
 	
-	public void enableTransitions(Collection<Transition> transitions) {
+	public void enableTransitions() {
 		for (Transition transition : transitions) {
 			Boolean enabled = true;
 			for (Place inPlace : transition.getIncomingPlaces()) {
