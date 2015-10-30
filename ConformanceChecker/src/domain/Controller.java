@@ -1,6 +1,7 @@
 package domain;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import petri.PetriNet;
@@ -12,7 +13,7 @@ import data.Trace;
 
 public class Controller {
 
-	public void doLogReplay(String xPathOfPetriNet, String xPathOfLog)
+	public List<Double> doLogReplay(String xPathOfPetriNet, String xPathOfLog)
 			throws Exception {
 
 		PetriNet petriNet = EntityManager.getPetryNet(xPathOfPetriNet);
@@ -97,17 +98,12 @@ public class Controller {
 		Collection<Place> places = petriNet.getPlaces();
 		Collection<Transition> transitions = petriNet.getTransitions();
 
-		double fitness = computeFitness(traces);
-		System.out.println("Fitness: " + fitness); // 1.0
+		List<Double> metrics = new LinkedList<Double>();
+		metrics.add(computeFitness(traces));
+		metrics.add(computeBehavAppropr(traces, transitions.size()));
+		metrics.add(computeStructAppropr(transitions.size(), places.size()));
 
-		double behavAppropr = computeBehavAppropr(traces, transitions.size());
-		System.out
-				.println("Simple Behavioral Appropriateness: " + behavAppropr); // 0.9236111
-
-		double structAppropr = computeStructAppropr(transitions.size(),
-				places.size());
-		System.out.println("Simple Structural Appropriateness: "
-				+ structAppropr); // 0.7
+		return metrics;
 
 	}
 
@@ -136,7 +132,7 @@ public class Controller {
 					* trace.getNumberOfProducedTokens();
 		}
 		double fitness = 0.5 * (1 - nm / nc) + 0.5 * (1 - nr / np);
-		return fitness;
+		return Math.round(fitness * 100.0) / 100.0;
 	}
 
 	// Compute Simple Behavioral Appropriateness
@@ -152,7 +148,7 @@ public class Controller {
 		}
 		double behavAppropr = numerator
 				/ (double) ((numberOfTransitions - 1) * sumOfInstances);
-		return behavAppropr;
+		return Math.round(behavAppropr * 100.0) / 100.0;
 	}
 
 	// Compute Simple Structural Appropriateness
@@ -160,7 +156,7 @@ public class Controller {
 			int numberOfPlaces) {
 		double structAppropr = (numberOfTransitions + 2)
 				/ (double) (numberOfTransitions + numberOfPlaces);
-		return structAppropr;
+		return Math.round(structAppropr * 100.0) / 100.0;
 	}
 
 }

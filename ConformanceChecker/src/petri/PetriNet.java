@@ -62,7 +62,7 @@ public class PetriNet {
 	
 	public void enableTransitions(Collection<Transition> transitions) {
 		for (Transition transition : transitions) {
-			boolean enabled = true;
+			Boolean enabled = true;
 			for (Place inPlace : transition.getIncomingPlaces()) {
 				if (inPlace.hasTokens() == false)
 					enabled = false;
