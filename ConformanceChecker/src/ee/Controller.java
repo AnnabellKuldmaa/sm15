@@ -1,4 +1,4 @@
-package domain;
+package ee;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -23,26 +23,20 @@ public class Controller {
 
 		for (Trace trace : traces) {
 
-			// Start of the first step
-
-			// Add the first token to start place
+			// Initial marking - one token in start
 			Place startPlace = petriNet.getStartPlace();
 			startPlace.produceToken();
 			trace.increaseNumberOfProducedTokens();
 
-			// Enable necessary transitions
-			Collection<Transition> outTransitions = startPlace
-					.getOutgoingTransitions();
-			petriNet.enableTransitions(outTransitions);
-			int numberOfEnabledTransitions = petriNet
-					.getNumberOfEnabledTransitions();
-			trace.increaseNumberOfEnabledTransitions(numberOfEnabledTransitions);
-
-			// End of the first step
-
 			// Iterate over events
 			List<Event> events = trace.getEvents();
 			for (Event event : events) {
+
+				petriNet.enableTransitions();
+
+				int numberOfEnabledTransitions = petriNet
+						.getNumberOfEnabledTransitions();
+				trace.increaseNumberOfEnabledTransitions(numberOfEnabledTransitions);
 
 				// Find respective transition
 				String eventName = event.getName();
@@ -53,41 +47,38 @@ public class Controller {
 				Collection<Place> inPlaces = transition.getIncomingPlaces();
 				for (Place inPlace : inPlaces) {
 					Boolean hasTokens = inPlace.hasTokens();
-					if (hasTokens) {
+					if (hasTokens)
 						inPlace.consumeToken();
-						trace.increaseNumberOfConsumedTokens();
-					} else {
+					else
 						trace.increaseNumberOfMissingTokens();
-					}
+
+					trace.increaseNumberOfConsumedTokens();
 				}
-				// transition.setEnabled(false);
 
 				// Produce tokens to the outgoing places
-				testMethod(trace, transition);
-
-				// Enable/disable transitions
-				Collection<Transition> transitions = petriNet.getTransitions();
-				petriNet.enableTransitions(transitions);
-				numberOfEnabledTransitions = petriNet
-						.getNumberOfEnabledTransitions();
-				trace.increaseNumberOfEnabledTransitions(numberOfEnabledTransitions);
+				Collection<Place> outPlaces = transition.getOutgoingPlaces();
+				for (Place outPlace : outPlaces) {
+					outPlace.produceToken();
+					trace.increaseNumberOfProducedTokens();
+				}
 
 			}
 
-			// End
+			// Check final marking
 			Place endPlace = petriNet.getEndPlace();
 			Boolean hasTokens = endPlace.hasTokens();
-			if (hasTokens) {
+			if (hasTokens)
 				endPlace.consumeToken();
-				trace.increaseNumberOfConsumedTokens();
-			} else {
+			else
 				trace.increaseNumberOfMissingTokens();
-			}
+
+			trace.increaseNumberOfConsumedTokens();
 
 			int numberOfTokens = petriNet.getNumberOfTokens();
 			trace.setNumberOfRemainingTokens(numberOfTokens);
 
-			numberOfEnabledTransitions = trace.getNumberOfEnabledTransitions();
+			int numberOfEnabledTransitions = trace
+					.getNumberOfEnabledTransitions();
 			trace.computeMeanNumberOfEnabledTransitions(
 					numberOfEnabledTransitions, events.size());
 
@@ -95,8 +86,8 @@ public class Controller {
 			petriNet.clearPetrinet();
 		}
 
-		Collection<Place> places = petriNet.getPlaces();
 		Collection<Transition> transitions = petriNet.getTransitions();
+		Collection<Place> places = petriNet.getPlaces();
 
 		List<Double> metrics = new LinkedList<Double>();
 		metrics.add(computeFitness(traces));
@@ -105,14 +96,6 @@ public class Controller {
 
 		return metrics;
 
-	}
-
-	private void testMethod(Trace trace, Transition transition) {
-		Collection<Place> outPlaces = transition.getOutgoingPlaces();
-		for (Place outPlace : outPlaces) {
-			outPlace.produceToken();
-			trace.increaseNumberOfProducedTokens();
-		}
 	}
 
 	// Compute Fitness

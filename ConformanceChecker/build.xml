@@ -29,7 +29,7 @@
          Run them from the command line by executing "ant [targetname]"  -->
 
 	<target name="run" depends="build" description="Run for testing">
-		<java classname="domain.Boundary" classpathref="run.classpath" fork="no" />
+		<java classname="ee.Boundary" classpathref="run.classpath" fork="no" />
 	</target>
 
 	<target name="build" description="Build the system">

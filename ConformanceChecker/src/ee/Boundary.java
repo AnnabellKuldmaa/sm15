@@ -1,4 +1,4 @@
-package domain;
+package ee;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
